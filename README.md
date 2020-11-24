@@ -1,6 +1,6 @@
 # Taking text data to the next level - Using supervised and unsupervised approaches in NLP
 
-![](https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fsecure.meetupstatic.com%2Fphotos%2Fevent%2F3%2Fd%2Fa%2Fd%2F600_493395789.jpeg)
+[![](https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fsecure.meetupstatic.com%2Fphotos%2Fevent%2F3%2Fd%2Fa%2Fd%2F600_493395789.jpeg)](https://www.meetup.com/rladies-bergen/events/274392883/)
 
 📍 R-Ladies Bergen
 
