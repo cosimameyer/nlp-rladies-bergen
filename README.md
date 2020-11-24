@@ -4,6 +4,8 @@
 
 📍 R-Ladies Bergen
 
+## About the talk
+
 Text data provides an oasis of information for both researchers and non-researchers alike to explore. Natural Language Processing (NLP) methods help make sense of this difficult data type, which is written text. The talk will give you a smooth introduction to the quanteda package (https://quanteda.io/). I will also showcase how to quickly visualize your text data and cover both supervised and unsupervised approaches in NLP. As part of a code demo, we will use text data from the UN as a working example to give you first insights into the structure of text data and how to work with it.
 
 ## Material
