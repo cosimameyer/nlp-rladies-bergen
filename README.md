@@ -12,7 +12,7 @@ Text data provides an oasis of information for both researchers and non-research
 
 You can access the material here:
 
-| Slides | Material |
+| Slides | Code |
 |--------|----------|
 
 
