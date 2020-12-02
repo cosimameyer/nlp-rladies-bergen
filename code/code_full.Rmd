@@ -10,6 +10,8 @@ output:
     code_download: true
 ---
 
+This code is accompanying material for [this talk](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) for R-Ladies Bergen.
+
 ## Preparation
 
 Load the packages
@@ -70,7 +72,7 @@ And we will walk through each of them now.
 # Load packages
 library(quanteda) # For NLP
 
-load("data/UN-data.RData")
+load("../data/UN-data.RData")
 ```
 
 2. Build a **corpus**
@@ -206,7 +208,7 @@ We use the [LexiCoder Policy Agenda](https://www.comparativeagendas.net) diction
 
 ```{r dic-topic}
 # Load the dictionary with quanteda's built-in function
-dict <- dictionary(file = "data/policy_agendas_english.lcd")
+dict <- dictionary(file = "../data/policy_agendas_english.lcd")
 ```
 
 Using this dictionary, we now generate our DFM:
