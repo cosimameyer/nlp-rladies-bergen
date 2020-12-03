@@ -7,10 +7,14 @@ output:
   html_document:
     toc: true
     toc_float: true
+    theme: "flatly"
     code_download: true
 ---
 
-This code is accompanying material for [this talk](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) for R-Ladies Bergen.
+This code is accompanying material for [this talk](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) for R-Ladies Bergen. 
+
+Text data provides an oasis of information for both researchers and non-researchers alike to explore. Natural Language Processing (NLP) methods help make sense of this difficult data type, which is written text. The talk and code give you a smooth introduction to the [quanteda package](https://quanteda.io/). I will also showcase how to quickly visualize your text data and cover both supervised and unsupervised approaches in NLP. As part of the code demo, we will use text [data from the UN](https://doi.org/10.7910/DVN/0TJX8Y) as a working example to give you first insights into the structure of text data and how to work with it.
+
 
 ## Preparation
 
@@ -34,7 +38,8 @@ pkgs <- c(
   "overviewR",
   "countrycode",
   "wesanderson",
-  "tidytext"
+  "tidytext",
+  "prettydoc"
 )
 
 ## Install uninstalled packages
