@@ -15,6 +15,7 @@ You can access the material here:
 | [Slides](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) | [Code](https://github.com/cosimameyer/nlp-rladies-bergen/tree/main/code) |
 |--------|----------|
 
+If you want to see the code in action, it's deployed [here](https://nlp-bergen.netlify.app).
 
 ## Overview repository
 
