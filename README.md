@@ -12,7 +12,7 @@ Text data provides an oasis of information for both researchers and non-research
 
 You can access the material here:
 
-| [Slides](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) | [Code]() |
+| [Slides](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) | [Code](https://github.com/cosimameyer/nlp-rladies-bergen/tree/main/code) |
 |--------|----------|
 
 
