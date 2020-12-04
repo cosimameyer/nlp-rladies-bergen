@@ -80,6 +80,12 @@ library(quanteda) # For NLP
 load("../data/UN-data.RData")
 ```
 
+Before we proceed, we check the time and geographical coverage of the data:
+```{r, data-check}
+un_data %>%
+  overview_tab(id = country, time = year)
+```
+
 2. Build a **corpus**
 
 ```{r corpus}
