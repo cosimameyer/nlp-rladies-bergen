@@ -20,13 +20,16 @@ You can access the material here:
 This repository contains:
 
 ```
-├── data
+├── code
 │   ├── code_full.Rmd
 │   ├── code_full.html
 │   └── terms.png
 ├── data
 │   ├── UN-data.RData
 │   └── policy_agendas_english.lcd
+├── figures
+│   ├── stm-evaluation.png
+│   └── terms.png
 └── nlp-rladies-bergen.Rproj
 ```
 
