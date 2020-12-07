@@ -35,23 +35,19 @@ In a first step, we load the packages.
 ```{r package, results='hide', message=FALSE, include=TRUE, eval=TRUE, echo=TRUE}
 ## Packages
 pkgs <- c(
-  "knitr",
-  "tidyverse",
-  "quanteda",
-  "readtext",
-  "stm",
-  "stminsights",
-  "wordcloud",
-  "gsl",
-  "topicmodels",
-  "caret",
-  "kableExtra",
-  "magrittr",
-  "overviewR",
-  "countrycode",
-  "wesanderson",
-  "tidytext",
-  "prettydoc"
+  "knitr",       # A General-Purpose Package for Dynamic Report Generation in R
+  "tidyverse",   # Easily Install and Load the 'Tidyverse'
+  "quanteda",    # Quantitative Analysis of Textual Data
+  "stm",         # Estimation of the Structural Topic Model
+  "stminsights", # A 'Shiny' Application for Inspecting Structural Topic Models
+  "topicmodels", # Topic Models
+  "kableExtra",  # Construct Complex Table with 'kable' and Pipe Syntax
+  "readtext",    # Import and Handling for Plain and Formatted Text Files
+  "magrittr",    # A Forward-Pipe Operator for R
+  "overviewR",   # Easily Extracting Information About Your Data
+  "countrycode", # Convert Country Names and Country Codes
+  "wesanderson", # A Wes Anderson Palette Generator
+  "tidytext"     # Text Mining using 'dplyr', 'ggplot2', and Other Tidy Tools
 )
 
 ## Install uninstalled packages
@@ -88,7 +84,7 @@ And we will walk through each of them now.
 
 ```{r data-load, echo=TRUE}
 # Load packages
-library(quanteda) # For NLP
+library(quanteda) # For NLP (Quantitative Analysis of Textual Data)
 
 load("../data/UN-data.RData")
 ```
@@ -218,6 +214,8 @@ Word clouds are an illustrative way to show what you have in your data. You can 
 
 #### Frequency plot
 
+To visualize the frequency of the top 30 features, we use a lollipop plot:
+
 ```{r frequency-plot, echo=TRUE}
 # Inspired here: https://bit.ly/37MCEHg
 
@@ -232,7 +230,15 @@ data <- data.frame(list(
 
 # Plot the plot
 data %>%
+  # Call ggplot
   ggplot() +
+  # Add geom_segment (this will give us the lines of the lollipops)
+  geom_segment(aes(
+    x = reorder(term, frequency),
+    xend = reorder(term, frequency),
+    y = 0,
+    yend = frequency
+  ), color = "grey") +
   # Call a point plot with the terms on the x-axis and the frequency on the y-axis
   geom_point(aes(x = reorder(term, frequency), y = frequency)) +
   # Flip the plot
@@ -553,6 +559,11 @@ data %>%
 
 We use the [`stm` package here](https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf). Quanteda also has [built-in topic models such as LDA](https://tutorials.quanteda.io/machine-learning/topicmodel/).
 
+```{r, load-stm}
+library(stm) # Estimation of the Structural Topic Model
+```
+
+
 In a first step, we assign a topic count. Usually the number of topics can be higher -- but that obviously comes at a cost. Here, it's computational power. To make it as fast as possible, we'll pick 5 topics for our example.
 
 ```{r topic-stm, echo=TRUE}
@@ -601,6 +612,9 @@ plot(
 You can also [combine `stm` with `tidytext`](https://juliasilge.com/blog/sherlock-holmes-stm/) to generate `ggplot2` objects. We follow [Julia Silge's outline](https://juliasilge.com/blog/sherlock-holmes-stm/) here. The plot shows the probabilities with which different terms are associated with the topics.
 
 ```{r stm-tidy, echo=TRUE}
+# Load tidytext
+library(tidytext) # Text Mining using 'dplyr', 'ggplot2', and Other Tidy Tools
+
 # Turn the STM object into a data frame. This is necessary so that we can work with it.
 td_beta <- tidy(model.stm)
 
@@ -659,15 +673,25 @@ These are just the most basic supervised and unsupervised models in NLP that you
 - Quanteda
 
   - [Kohei Watanabe and Stefan Müller: Quanteda Tutorials](https://tutorials.quanteda.io)
+  - [Quanteda Cheat Sheet](https://muellerstefan.net/files/quanteda-cheatsheet.pdf)
 
-- More on text mining
+- More on text mining and NLP
   - [Cosima Meyer and Cornelius Puschmann: Advancing Text Mining with R and quanteda](https://www.mzes.uni-mannheim.de/socialsciencedatalab/article/advancing-text-mining/)
+  - [Justin Grimmer and Brandon Stewart: Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts](https://www.cambridge.org/core/journals/political-analysis/article/text-as-data-the-promise-and-pitfalls-of-automatic-content-analysis-methods-for-political-texts/F7AAC8B2909441603FEB25C156448F20)
+  - [Dan Jurafsky and James H. Martin: Speech and Language Processing](https://web.stanford.edu/~jurafsky/slp3/)
 
 - Sentiment analysis
   - [sentimentr](https://github.com/trinker/sentimentr)
-  - [Hammerschmidt/Meyer 2020: Money Makes the World Go Frowned - Analyzing the Impact of Chinese Foreign Aid on States' Sentiment Using Natural Language Processing](https://www.tectum-shop.de/titel/chinas-rolle-in-einer-neuen-weltordnung-id-97867/)
+  - [Hammerschmidt/Meyer 2020: Money Makes the World Go Frowned - Analyzing the Impact of Chinese Foreign Aid on States' Sentiment Using Natural Language Processing](https://www.tectum-shop.de/titel/chinas-rolle-in-einer-neuen-weltordnung-id-97867/) (for an applied example of sentiment analysis)
 
 - Model validation
   - [oolong: Validation of dictionary approaches and topic models](https://cran.r-project.org/web/packages/oolong/index.html)
   - [stminsights](https://github.com/cschwem2er/stminsights)
+  
+- More general resource
+  - [Data Science & Society](https://dssoc.github.io/schedule/)
+  - [RegEx Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf)
+  - [Stringr Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
+
+
 
