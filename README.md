@@ -24,9 +24,10 @@ This repository contains:
 │   ├── code_full.Rmd
 │   ├── code_full.html
 │   └── terms.png
-└── data
-    ├── UN-data.RData
-    └── policy_agendas_english.lcd
+├── data
+│   ├── UN-data.RData
+│   └── policy_agendas_english.lcd
+└── nlp-rladies-bergen.Rproj
 ```
 
 ## More resources
