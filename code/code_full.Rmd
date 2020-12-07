@@ -26,7 +26,7 @@ Text data provides an oasis of information for both researchers and non-research
 
 Before we get started, you might want to revise the terms and concepts once more (or use it as a glossary to look them up when needed). 
 
-![](terms.png)
+![](../figures/terms.png)
 
 ## Preparation
 
@@ -40,6 +40,8 @@ pkgs <- c(
   "quanteda",    # Quantitative Analysis of Textual Data
   "stm",         # Estimation of the Structural Topic Model
   "stminsights", # A 'Shiny' Application for Inspecting Structural Topic Models
+  "LDAvis",      # Interactive Visualization of Topic Models
+  "servr",       # A Simple HTTP Server to Serve Static Files or Dynamic Documents
   "topicmodels", # Topic Models
   "kableExtra",  # Construct Complex Table with 'kable' and Pipe Syntax
   "readtext",    # Import and Handling for Plain and Formatted Text Files
@@ -572,6 +574,9 @@ topic.count <- 5
 ```
 
 ```{r dfm-to-stm, echo=TRUE}
+# To make sure that we get the same results, we set a seed
+set.seed(68159)
+
 # Convert the trimmed DFM to a STM object
 dfm2stm <- convert(mydfm.trim, to = "stm")
 
@@ -583,6 +588,9 @@ model.stm <- stm(
   vocab = dfm2stm$vocab,
   # Define the number of topics
   K = topic.count,
+  # The neat thing about STM is that you can use meta data to inform your model 
+  # (here we use country and year and rely heavily on the vignette of STM)
+  prevalence = ~ country + s(year),
   # Define the data set that contains content variables (remember, this is what is so great about STM!)
   data = dfm2stm$meta,
   # This defines the initialization method. "spectral" is the default and provides a deterministic
@@ -591,6 +599,7 @@ model.stm <- stm(
   init.type = "Spectral"
 )
 ```
+As mentioned during the talk, the structural topic model can also include meta data to estimate the topic. You include them using the argument `prevalence`. If you want to know more about it works, see [this excellent vignette](https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf).
 
 There are different ways to visualize the results. We'll first go with base-plot which gives you a shared estimation of the topic shares.
 
@@ -606,6 +615,22 @@ plot(
   main = "STM topic shares",
   # And the x-axis
   xlab = "Share estimation"
+)
+```
+
+To get more out of it and to learn more about topic 4, we can use `findThoughts` to get the plain text that is associated with the topic:
+
+```{r, stm-plain-text}
+findThoughts(
+  # Your topic model
+  model.stm,
+  # The text data that you used 
+  # to retrieve passages from
+  texts = un_data$text,
+  # Number of documents to be displayed here
+  n = 1,
+  # Topic number you are interested in
+  topics = 4
 )
 ```
 
@@ -641,7 +666,6 @@ td_beta %>%
   scale_x_reordered() +
   # Label the x-axis, y-axis, as well as title
   labs(
-    x = NULL,
     y = expression(beta),
     title = "Highest word probabilities for each topic",
     subtitle = "Different words are associated with different topics"
@@ -663,6 +687,26 @@ plot(
   # Define the title
   main = "Putting two different topics in perspective")
 ```
+
+It is always tricky to find the right number of topics (your `k`). The `stm` package comes with a handy function called `searchK` that allows you to evaluate different topic models and to find your `k`. We can again plot it using the `plot()` function. 
+
+To further evaluate your topic models, have a look at [`stminsights`](https://github.com/cschwem2er/stminsights), [`LDAvis`](https://cran.r-project.org/web/packages/LDAvis/index.html) (use `stminsights::toLDAvis` to convert your STM model), and [`oolong`](https://cran.r-project.org/web/packages/oolong/index.html).
+
+Here's a short code snippet that shows how `LDAvis` works. Both `stminsights` and `LDAvis` call ShinyApps that allow you to interactively access your topic models.
+
+```{r, eval=FALSE, stm-evaluation}
+library(LDAvis) # Interactive Visualization of Topic Models
+
+toLDAvis(
+  # The topic model
+  mod = model.stm, 
+  # The documents
+  docs = dfm2stm$documents)
+```
+
+The ShinyApp looks like this:
+
+![](../figures/stm-evaluation.png)
 
 ## Next steps
 
@@ -687,11 +731,10 @@ These are just the most basic supervised and unsupervised models in NLP that you
 - Model validation
   - [oolong: Validation of dictionary approaches and topic models](https://cran.r-project.org/web/packages/oolong/index.html)
   - [stminsights](https://github.com/cschwem2er/stminsights)
+  - [LDAvis](https://cran.r-project.org/web/packages/LDAvis/index.html)
   
 - More general resource
   - [Data Science & Society](https://dssoc.github.io/schedule/)
   - [RegEx Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf)
   - [Stringr Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
-
-
 
