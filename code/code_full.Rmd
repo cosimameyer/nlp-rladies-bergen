@@ -2,25 +2,37 @@
 title: "Taking text data to the next level"
 subtitle: "Using supervised and unsupervised approaches in NLP"
 date: "2020-12-08"
-author: "Cosima Meyer"
+author:
+  - Cosima Meyer^[University of Mannheim, cosima.meyer@uni-mannheim.de]
 output: 
   html_document:
+    theme: flatly
     toc: true
     toc_float: true
-    theme: "flatly"
     code_download: true
+    toc_depth: 5
+
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 This code is accompanying material for [this talk](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) for R-Ladies Bergen. 
 
 Text data provides an oasis of information for both researchers and non-researchers alike to explore. Natural Language Processing (NLP) methods help make sense of this difficult data type, which is written text. The talk and code give you a smooth introduction to the [quanteda package](https://quanteda.io/). I will also showcase how to quickly visualize your text data and cover both supervised and unsupervised approaches in NLP. As part of the code demo, we will use text [data from the UN](https://doi.org/10.7910/DVN/0TJX8Y) as a working example to give you first insights into the structure of text data and how to work with it.
 
+## Knowing terms and concepts
+
+Before we get started, you might want to revise the terms and concepts once more (or use it as a glossary to look them up when needed). 
+
+![](terms.png)
 
 ## Preparation
 
-Load the packages
+In a first step, we load the packages.
 
-```{r package, results='hide', message=FALSE, include=TRUE, eval=TRUE}
+```{r package, results='hide', message=FALSE, include=TRUE, eval=TRUE, echo=TRUE}
 ## Packages
 pkgs <- c(
   "knitr",
@@ -59,7 +71,8 @@ theme_set(
 ```
 
 ## How to deal with text data?
-Remember, we will use `quanteda` in this workshop. Starting with `quanteda` basically works in 3-4 different steps:
+
+Remember, we will use [`quanteda`](https://quanteda.io/) in this workshop. Starting with `quanteda` basically works in 3-4 different steps:
 
 1. **Import** the data 
 
@@ -73,22 +86,33 @@ And we will walk through each of them now.
 
 1. **Import** the data 
 
-```{r data-load}
+```{r data-load, echo=TRUE}
 # Load packages
 library(quanteda) # For NLP
 
 load("../data/UN-data.RData")
 ```
 
-Before we proceed, we check the time and geographical coverage of the data:
-```{r, data-check}
+Before we proceed, we check the data and the time and geographical coverage of the data:
+
+```{r, data-check 1, echo=TRUE}
+head(un_data)
+```
+
+What we see is that our data set has five variables containing information on `doc_id`, `text`, `country`, `session`, and `year`. The text of the speech is stored in the variable `text`, the `doc_id` gives us a unique id for each document.
+
+No we turn to the time and geographical coverage:
+
+```{r, data-check 2, echo=TRUE}
 un_data %>%
   overview_tab(id = country, time = year)
 ```
 
+To decrease the sample size, I reduced the data set and it now only captures data from 2000 onwards.
+
 2. Build a **corpus**
 
-```{r corpus}
+```{r corpus, echo=TRUE}
 # Build the corpus
 mycorpus <- corpus(un_data)
 
@@ -98,7 +122,8 @@ docvars(mycorpus, "Textno") <-
 ```
 
 3. Text **pre-processing** (not all steps are always required). This way, we get the tokens.
-```{r rtokens}
+
+```{r rtokens, echo=TRUE}
 # Create tokens
 token <-
   tokens(
@@ -120,7 +145,8 @@ token <-
 ```
 
 Since the data is generated with OCR, we need to additionally clean this. We do this using the following command:
-```{r ocr-cleaning, results='hide', message=FALSE}
+
+```{r ocr-cleaning, results='hide', message=FALSE, echo=TRUE}
 # Clean tokens created by OCR
 token_ungd <- tokens_select(
   token,
@@ -133,9 +159,9 @@ token_ungd <- tokens_select(
 
 4. Calculate a **document-feature matrix** (DFM)
 
-Here, we also stem, remove stop words and lower words.
+Here, we also stem, remove stop words and lower case words.
 
-```{r dfm}
+```{r dfm, echo=TRUE}
 mydfm <- dfm(
   # Take the token object
   token_ungd,
@@ -149,13 +175,14 @@ mydfm <- dfm(
 ```
 
 Have a look at the DFM:
-```{r head-dfm-normal}
+
+```{r head-dfm-normal, echo=TRUE}
 head(mydfm)
 ```
 
 Trim data: remove all the words that appear less than 7.5% of the time and more than 90% of the time
 
-```{r dfm-trim}
+```{r dfm-trim, echo=TRUE}
 mydfm.trim <-
   dfm_trim(
     mydfm,
@@ -173,7 +200,8 @@ mydfm.trim <-
 #### Word clouds
 
 To get a first and easy visualization, we use word clouds:
-```{r word-cloud}
+
+```{r word-cloud, echo=TRUE}
 quanteda::textplot_wordcloud(
   # Load the DFM object
   mydfm,
@@ -186,9 +214,12 @@ quanteda::textplot_wordcloud(
 )
 ```
 
+Word clouds are an illustrative way to show what you have in your data. You can also use word clouds beyond NLP analysis purposes, e.g., on a [website](https://www.uni-mannheim.de/conflict-dynamics/past-workshops/workshop-2020/).
+
 #### Frequency plot
-```{r frequency-plot}
-# Inspired here: https://mran.microsoft.com/snapshot/2017-01-26/web/packages/quanteda/vignettes/plotting.html
+
+```{r frequency-plot, echo=TRUE}
+# Inspired here: https://bit.ly/37MCEHg
 
 # Get the 30 top features from the DFM
 freq_feature <- topfeatures(mydfm, 30)
@@ -217,13 +248,14 @@ data %>%
 
 We use the [LexiCoder Policy Agenda](https://www.comparativeagendas.net) dictionary. It [captures major topics from the comparative Policy Agenda project and is currently available in Dutch and English.](https://www.mzes.uni-mannheim.de/socialsciencedatalab/article/advancing-text-mining/)
 
-```{r dic-topic}
+```{r dic-topic, echo=TRUE}
 # Load the dictionary with quanteda's built-in function
 dict <- dictionary(file = "../data/policy_agendas_english.lcd")
 ```
 
 Using this dictionary, we now generate our DFM:
-```{r dfm-topic}
+
+```{r dfm-topic, echo=TRUE}
 # Generate the DFM...
 mydfm.un <- dfm(mydfm.trim, 
                 # Based on country
@@ -233,13 +265,14 @@ mydfm.un <- dfm(mydfm.trim,
 ```
 
 Have a look at the new DFM:
-```{r head-topic}
+
+```{r head-topic, echo=TRUE}
 head(mydfm.un)
 ```
 
 Before we can turn to the plotting, we need to wrangle the data bit to bring it in the right order. These are basic tidyverse commands.
 
-```{r topic-wrangling}
+```{r topic-wrangling, echo=TRUE}
 un.topics.pa <- 
   # Convert the DFM to a data frame
   convert(mydfm.un, "data.frame") %>%
@@ -260,7 +293,7 @@ un.topics.pa <-
 
 Based on this data set, we now generate the plot.
 
-```{r plot-topic}
+```{r plot-topic, echo=TRUE}
 # Generate the plot
 un.topics.pa %>%
   # We have country on the x-axis and the share on the y-axis, we color and fill by topic
@@ -288,9 +321,10 @@ un.topics.pa %>%
 ```
 
 #### Sentiment analysis
+
 Here, we need to define more stopwords (create a manual list of them) to make sure that we do not bias our results. I have a non-exhaustive list here:
 
-```{r sentiment-stopwords}
+```{r sentiment-stopwords, echo=TRUE}
 # Define stopwords
 UNGD_stopwords <-
   c(
@@ -354,9 +388,11 @@ UNGD_stopwords <-
   )
 ```
 
+To apply it, we re-start from step 4 creating a DFM. 
+
 We know apply it to our function
 
-```{r dfm-sentiment}
+```{r dfm-sentiment, echo=TRUE}
 # Remove self-defined stopwords
 mydfm_sentiment <- dfm(
   # Select the token object
@@ -372,7 +408,7 @@ mydfm_sentiment <- dfm(
 
 Trim data: remove all the words that appear less than 7.5% of the time and more than 90% of the time
 
-```{r dfm-trim-sentiment}
+```{r dfm-trim-sentiment, echo=TRUE}
 mydfm.trim <-
   dfm_trim(
     # Select the DFM object
@@ -388,6 +424,7 @@ mydfm.trim <-
 And now we get the sentiment :-)
 There are multiple ways how to do it, we will use one that is built in quanteda. In any case, it is important to check the underlying dictionary (on which basis is it built on?). 
 The most frequently used dictionaries are:
+
 - [NRC](https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm)
 - [Bing](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html)
 - [AFINN](http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html)
@@ -396,7 +433,7 @@ For a more fine-grained approach, there is also the [`sentimentr` package](https
 
 We will go with the LSD dictionary here as it is already built in quanteda.
 
-```{r sentiment-dict}
+```{r sentiment-dict, echo=TRUE}
 # Call a dictionary
 dfmat_lsd <-
   dfm(mydfm.trim,
@@ -405,13 +442,15 @@ dfmat_lsd <-
 ```
 
 We can look  at the dictionary first choosing the first 5 documents:
-```{r sentiment-head}
+
+```{r sentiment-head, echo=TRUE}
 head(dfmat_lsd, 5)
 ```
 
 
 To better work with the data, we convert it to a data frame:
-```{r convert-dfm}
+
+```{r convert-dfm, echo=TRUE}
 # Calculate the overall
 # share of positive and
 # negative words on a scale
@@ -420,7 +459,8 @@ data <- convert(dfmat_lsd,
 ```
 
 To get more meaningful results, we do some last tweaks:
-```{r sentiment-wrangling}
+
+```{r sentiment-wrangling, echo=TRUE}
 data %<>%
   dplyr::mutate(
     # Generate the number of total words
@@ -445,7 +485,8 @@ data %<>%
 ```
 
 We first get an overall impression by plotting the average net sentiment by continent over time:
-```{r vis-avg-sentiment}
+
+```{r vis-avg-sentiment, echo=TRUE}
 data %>%
   # Generate the continent for each country using the `countrycode()` command
   dplyr::mutate(continent = countrycode(ccode, "iso3c", "continent", custom_match =
@@ -467,7 +508,8 @@ data %>%
 ```
 
 And now we want to visualize the results in more detail :-)
-```{r vis-sentiment, results='hide', message=FALSE, warning=FALSE}
+
+```{r vis-sentiment, results='hide', message=FALSE, warning=FALSE, echo=TRUE}
 data %>%
   # Generate the country name for each country using the `countrycode()` command
   dplyr::mutate(countryname = countrycode(ccode, "iso3c", "country.name")) %>%
@@ -509,15 +551,16 @@ data %>%
 
 #### Structural topic models
 
-We use the [`stm` package here](https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf). Quanteda has also has [built-in topic models such as LDA](https://tutorials.quanteda.io/machine-learning/topicmodel/).
+We use the [`stm` package here](https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf). Quanteda also has [built-in topic models such as LDA](https://tutorials.quanteda.io/machine-learning/topicmodel/).
 
-Assign a topic count. Usually the number of topics is higher -- but that obviously comes at a cost. Here, it's computational power. To make it as fast as possible, we'll pick 5 topics for our example.
-```{r topic-stm}
+In a first step, we assign a topic count. Usually the number of topics can be higher -- but that obviously comes at a cost. Here, it's computational power. To make it as fast as possible, we'll pick 5 topics for our example.
+
+```{r topic-stm, echo=TRUE}
 # Assigns the number of topics
 topic.count <- 5 
 ```
 
-```{r dfm-to-stm}
+```{r dfm-to-stm, echo=TRUE}
 # Convert the trimmed DFM to a STM object
 dfm2stm <- convert(mydfm.trim, to = "stm")
 
@@ -539,7 +582,8 @@ model.stm <- stm(
 ```
 
 There are different ways to visualize the results. We'll first go with base-plot which gives you a shared estimation of the topic shares.
-```{r plot-stm}
+
+```{r plot-stm, echo=TRUE}
 plot(
   # Takes the STM object
   model.stm,
@@ -556,7 +600,7 @@ plot(
 
 You can also [combine `stm` with `tidytext`](https://juliasilge.com/blog/sherlock-holmes-stm/) to generate `ggplot2` objects. We follow [Julia Silge's outline](https://juliasilge.com/blog/sherlock-holmes-stm/) here. The plot shows the probabilities with which different terms are associated with the topics.
 
-```{r stm-tidy}
+```{r stm-tidy, echo=TRUE}
 # Turn the STM object into a data frame. This is necessary so that we can work with it.
 td_beta <- tidy(model.stm)
 
@@ -594,7 +638,7 @@ td_beta %>%
 
 You could also visualize our results with a perspective plot that allows you to show how different terms are related with each topic. We again use a base plot here.
 
-```{r stm-perspective}
+```{r stm-perspective, echo=TRUE}
 plot(
   # Access the STM object
   model.stm,
@@ -605,4 +649,25 @@ plot(
   # Define the title
   main = "Putting two different topics in perspective")
 ```
+
+## Next steps
+
+These are just the most basic supervised and unsupervised models in NLP that you can use but as you work more and more with textual data, you will see that there is so much more in the field of NLP including [document similarity](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#56), [text generation](https://arxiv.org/abs/1906.01946) or even [chat bots](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#57) that you can create using your knowledge and the same simple steps that we have used here.
+
+## More resources
+
+- Quanteda
+
+  - [Kohei Watanabe and Stefan Müller: Quanteda Tutorials](https://tutorials.quanteda.io)
+
+- More on text mining
+  - [Cosima Meyer and Cornelius Puschmann: Advancing Text Mining with R and quanteda](https://www.mzes.uni-mannheim.de/socialsciencedatalab/article/advancing-text-mining/)
+
+- Sentiment analysis
+  - [sentimentr](https://github.com/trinker/sentimentr)
+  - [Hammerschmidt/Meyer 2020: Money Makes the World Go Frowned - Analyzing the Impact of Chinese Foreign Aid on States' Sentiment Using Natural Language Processing](https://www.tectum-shop.de/titel/chinas-rolle-in-einer-neuen-weltordnung-id-97867/)
+
+- Model validation
+  - [oolong: Validation of dictionary approaches and topic models](https://cran.r-project.org/web/packages/oolong/index.html)
+  - [stminsights](https://github.com/cschwem2er/stminsights)
 
