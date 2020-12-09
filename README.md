@@ -12,8 +12,8 @@ Text data provides an oasis of information for both researchers and non-research
 
 You can access the material here:
 
-| [Slides](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) | [Code (raw)](https://github.com/cosimameyer/nlp-rladies-bergen/tree/main/code) | [Code (deployed)](https://nlp-bergen.netlify.app) |
-|--------|----------|----------|
+| [Slides](http://cosimameyer.rbind.io/slides/nlp-rladies/talk#1) | [Code (raw)](https://github.com/cosimameyer/nlp-rladies-bergen/tree/main/code) | [Code (deployed)](https://nlp-bergen.netlify.app) | [Recording](https://youtu.be/bvqur70ZmyM) |
+|--------|----------|----------|----------|
 
 ## Overview repository
 
